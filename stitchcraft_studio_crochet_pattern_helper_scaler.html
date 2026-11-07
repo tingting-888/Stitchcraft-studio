@@ -1,0 +1,1273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StitchCraft Studio - Crochet Helper & Pattern Scaler</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Canvas Confetti for Full-Screen Completion Celebration -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <!-- Document & OCR Parsers: Mammoth (.docx), PDF.js (.pdf), Tesseract.js (Images) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/4.1.1/tesseract.min.js"></script>
+    <script>
+        // Configure PDF.js worker
+        if (window.pdfjsLib) {
+            pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+        }
+    </script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Nunito', sans-serif;
+            background-color: #FAF5EF;
+            color: #4A3E3D;
+        }
+        h1, h2, h3, h4, .brand-font {
+            font-family: 'Fredoka', cursive;
+        }
+        /* Custom Scrollbars */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #F2E8DF;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #D4A373;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #BC8A5F;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between text-stone-800">
+
+    <!-- Header Navigation -->
+    <header class="bg-amber-100/80 backdrop-blur border-b border-amber-200 sticky top-0 z-30 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3 cursor-pointer" onclick="switchTab('library')">
+                <!-- Cute Sitting Panda Crocheting Icon -->
+                <div class="w-12 h-12 rounded-full bg-amber-500/10 border-2 border-amber-400 flex items-center justify-center p-1 shadow-inner relative overflow-hidden bg-white shrink-0">
+                    <svg viewBox="0 0 100 100" class="w-full h-full">
+                        <!-- Panda Legs / Sitting Bottom -->
+                        <ellipse cx="32" cy="78" rx="11" ry="8" fill="#292524" />
+                        <ellipse cx="68" cy="78" rx="11" ry="8" fill="#292524" />
+                        <!-- Paw Pads -->
+                        <circle cx="32" cy="79" r="4.5" fill="#f43f5e" opacity="0.3" />
+                        <circle cx="68" cy="79" r="4.5" fill="#f43f5e" opacity="0.3" />
+
+                        <!-- Panda Body (Tummy) -->
+                        <ellipse cx="50" cy="65" rx="22" ry="18" fill="#FFFFFF" stroke="#292524" stroke-width="2.5" />
+                        <!-- Black Vest / Shoulder Patch -->
+                        <path d="M 30 52 Q 50 62 70 52 C 75 65 72 75 68 75 C 60 75 40 75 32 75 C 28 75 25 65 30 52 Z" fill="#292524" />
+                        <!-- White Tummy Overlay -->
+                        <ellipse cx="50" cy="67" rx="13" ry="10" fill="#FFFFFF" />
+
+                        <!-- Panda Ears -->
+                        <circle cx="28" cy="22" r="11" fill="#292524" />
+                        <circle cx="72" cy="22" r="11" fill="#292524" />
+                        <circle cx="28" cy="22" r="5.5" fill="#f43f5e" opacity="0.3"/>
+                        <circle cx="72" cy="22" r="5.5" fill="#f43f5e" opacity="0.3"/>
+                        
+                        <!-- Panda Head -->
+                        <ellipse cx="50" cy="38" rx="27" ry="23" fill="#FFFFFF" stroke="#292524" stroke-width="2.5"/>
+                        
+                        <!-- Eye Patches -->
+                        <ellipse cx="38" cy="36" rx="8" ry="9.5" fill="#292524" transform="rotate(-12 38 36)" />
+                        <ellipse cx="62" cy="36" rx="8" ry="9.5" fill="#292524" transform="rotate(12 62 36)" />
+                        
+                        <!-- Eyes Sparkle -->
+                        <circle cx="39" cy="34" r="2.5" fill="#FFFFFF" />
+                        <circle cx="61" cy="34" r="2.5" fill="#FFFFFF" />
+                        <circle cx="40.5" cy="36" r="1" fill="#FFFFFF" />
+                        <circle cx="59.5" cy="36" r="1" fill="#FFFFFF" />
+                        
+                        <!-- Nose & Mouth -->
+                        <ellipse cx="50" cy="44" rx="4" ry="2.5" fill="#292524" />
+                        <path d="M 47 47 Q 50 50 53 47" stroke="#292524" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+                        
+                        <!-- Cute Pink Cheeks -->
+                        <circle cx="31" cy="44" r="3.5" fill="#f43f5e" opacity="0.45" />
+                        <circle cx="69" cy="44" r="3.5" fill="#f43f5e" opacity="0.45" />
+                        
+                        <!-- Panda Arms Holding Crochet Hook & Yarn -->
+                        <path d="M 28 54 Q 40 60 46 68" stroke="#292524" stroke-width="6" stroke-linecap="round" fill="none" />
+                        <path d="M 72 54 Q 60 60 54 68" stroke="#292524" stroke-width="6" stroke-linecap="round" fill="none" />
+
+                        <!-- Cozy Yarn Ball sitting in lap -->
+                        <circle cx="50" cy="74" r="9.5" fill="#f59e0b" stroke="#b45309" stroke-width="1.8" />
+                        <path d="M 44 74 C 47 68 53 80 56 74 M 46 70 C 52 70 48 78 53 76" stroke="#fef08a" stroke-width="1.2" fill="none"/>
+
+                        <!-- Wooden Crochet Hook -->
+                        <path d="M 33 76 L 63 56" stroke="#78350f" stroke-width="2.5" stroke-linecap="round"/>
+                        <path d="M 63 56 C 65 54.5 63.5 53 61.5 55" stroke="#78350f" stroke-width="2" fill="none" stroke-linecap="round"/>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="text-2xl font-bold text-amber-900 leading-tight">StitchCraft <span class="text-amber-600">Studio</span></h1>
+                    <p class="text-xs text-amber-700 -mt-1 font-semibold">Interactive Crochet Helper & Scaler</p>
+                </div>
+            </div>
+
+            <!-- Nav Tabs -->
+            <nav class="flex space-x-2">
+                <button id="nav-library" onclick="switchTab('library')" class="px-4 py-2 rounded-xl text-sm font-bold bg-amber-600 text-white shadow-sm hover:bg-amber-700 transition">
+                    <i class="fa-solid fa-book-open mr-1.5"></i> My Patterns
+                </button>
+                <button id="nav-editor" onclick="switchTab('editor')" class="px-4 py-2 rounded-xl text-sm font-bold text-amber-800 hover:bg-amber-200/60 transition">
+                    <i class="fa-solid fa-pen-ruler mr-1.5"></i> Pattern Editor & Scaler
+                </button>
+                <button id="nav-workspace" onclick="switchTab('workspace')" class="px-4 py-2 rounded-xl text-sm font-bold text-amber-800 hover:bg-amber-200/60 transition">
+                    <i class="fa-solid fa-circle-play mr-1.5"></i> Active Crochet Mode
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-grow w-full">
+
+        <!-- ================= TAB 1: PATTERN LIBRARY ================= -->
+        <section id="tab-library" class="space-y-6">
+            <!-- Hero / Action Bar -->
+            <div class="bg-gradient-to-r from-amber-500 to-amber-600 rounded-3xl p-6 text-white shadow-lg flex flex-col md:flex-row items-center justify-between gap-6">
+                <div>
+                    <h2 class="text-3xl font-bold mb-2">Welcome to StitchCraft Studio! 🧶</h2>
+                    <p class="text-amber-100 max-w-xl text-sm sm:text-base">
+                        Select a pattern to start crocheting step-by-step, scale any pattern to your desired size, or import your own text pattern file.
+                    </p>
+                </div>
+                <div class="flex flex-wrap gap-3">
+                    <button onclick="createNewPattern()" class="bg-white text-amber-900 hover:bg-amber-50 px-5 py-3 rounded-2xl font-bold text-sm shadow transition flex items-center">
+                        <i class="fa-solid fa-plus mr-2 text-amber-600"></i> Create New Pattern
+                    </button>
+                    <label class="bg-amber-700/60 hover:bg-amber-700 text-white border border-amber-400/40 px-5 py-3 rounded-2xl font-bold text-sm cursor-pointer shadow transition flex items-center" title="Import pattern file">
+                        <i class="fa-solid fa-file-arrow-up mr-2"></i> Import Pattern File
+                        <input type="file" id="file-import-input" accept=".json,.txt,.docx,.doc,.pdf,.png,.jpg,.jpeg,.webp,.crochet,.md" class="hidden" onchange="importPatternFile(event)">
+                    </label>
+                </div>
+            </div>
+
+            <!-- Extraction / Processing Spinner Alert -->
+            <div id="import-processing-banner" class="hidden bg-amber-500 text-white p-4 rounded-2xl shadow-md flex items-center justify-between animate-pulse">
+                <div class="flex items-center space-x-3">
+                    <i class="fa-solid fa-spinner fa-spin text-xl"></i>
+                    <div>
+                        <h4 class="font-bold text-sm" id="import-status-title">Reading & Parsing Document...</h4>
+                        <p class="text-xs text-amber-100" id="import-status-desc">Extracting pattern text from your document or image.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Library Grid -->
+            <div>
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-xl font-bold text-stone-800">Your Project Library</h3>
+                    <span id="pattern-count-badge" class="text-xs bg-amber-200 text-amber-800 font-bold px-3 py-1 rounded-full">3 Patterns</span>
+                </div>
+                <div id="pattern-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Dynamic Pattern Cards inserted via JS -->
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ================= TAB 2: PATTERN EDITOR & SCALER ================= -->
+        <section id="tab-editor" class="hidden space-y-6">
+            <div class="bg-white rounded-3xl p-6 border border-amber-200 shadow-sm">
+                
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center pb-4 border-b border-stone-100 gap-4">
+                    <div>
+                        <h2 class="text-2xl font-bold text-stone-800" id="editor-title-heading">Edit Pattern</h2>
+                        <p class="text-xs text-stone-500">Customize yarn specs, adjust scale, and tweak pattern instructions.</p>
+                    </div>
+                    <div class="flex space-x-2">
+                        <button onclick="saveCurrentEditorPattern()" class="bg-amber-600 text-white hover:bg-amber-700 px-4 py-2 rounded-xl text-sm font-bold shadow transition flex items-center">
+                            <i class="fa-solid fa-floppy-disk mr-1.5"></i> Save Pattern
+                        </button>
+                        <button onclick="loadIntoWorkspaceFromEditor()" class="bg-emerald-600 text-white hover:bg-emerald-700 px-4 py-2 rounded-xl text-sm font-bold shadow transition flex items-center">
+                            <i class="fa-solid fa-circle-play mr-1.5"></i> Start Crocheting
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Form Layout -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
+                    <!-- Basic Info & Yarn Settings -->
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-bold text-stone-600 mb-1">Pattern Title</label>
+                            <input type="text" id="edit-pattern-title" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 font-bold text-stone-800 focus:outline-none focus:ring-2 focus:ring-amber-500" placeholder="e.g. Amigurumi Bear Head">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-stone-600 mb-1">Work Type</label>
+                            <select id="edit-work-type" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 text-sm font-bold text-stone-700 focus:outline-none focus:ring-2 focus:ring-amber-500">
+                                <option value="round">Worked in the Round (Concentric Circles / Amigurumi)</option>
+                                <option value="flat">Worked Flat (Back & Forth Rows)</option>
+                            </select>
+                        </div>
+
+                        <div class="p-4 bg-amber-50 rounded-2xl border border-amber-200 space-y-3">
+                            <h4 class="font-bold text-xs uppercase tracking-wider text-amber-800 flex items-center">
+                                <i class="fa-solid fa-ruler-combined mr-1.5"></i> Materials & Hook Setup
+                            </h4>
+                            
+                            <div>
+                                <label class="block text-xs font-bold text-stone-600 mb-1">Yarn Brand / Ply / Weight</label>
+                                <input type="text" id="edit-yarn-type" class="w-full bg-white border border-stone-200 rounded-xl px-3 py-2 text-xs font-semibold text-stone-800 focus:ring-2 focus:ring-amber-500" placeholder="e.g. Milk Cotton 5-ply, Chunky Plush Yarn...">
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label class="block text-xs font-bold text-stone-600 mb-1">Hook Size (mm)</label>
+                                    <select id="edit-hook-size" class="w-full bg-white border border-stone-200 rounded-xl px-3 py-2 text-xs font-semibold text-stone-800" onchange="calculateEstimatedDimensions()">
+                                        <option value="2.0">2.0 mm</option>
+                                        <option value="2.5">2.5 mm</option>
+                                        <option value="3.0">3.0 mm</option>
+                                        <option value="3.5">3.5 mm</option>
+                                        <option value="4.0" selected>4.0 mm</option>
+                                        <option value="5.0">5.0 mm</option>
+                                        <option value="6.0">6.0 mm</option>
+                                        <option value="8.0">8.0 mm</option>
+                                        <option value="10.0">10.0 mm</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-stone-600 mb-1">Base Gauge (sts/cm)</label>
+                                    <input type="number" id="edit-gauge-rate" step="0.1" value="2.2" class="w-full bg-white border border-stone-200 rounded-xl px-3 py-2 text-xs font-semibold text-stone-800" onchange="calculateEstimatedDimensions()">
+                                </div>
+                            </div>
+
+                            <div class="text-xs bg-white p-3 rounded-xl border border-amber-200 text-stone-600 flex justify-between items-center">
+                                <span>Estimated Finish Size:</span>
+                                <span id="estimated-dimensions-text" class="font-bold text-amber-900">12 cm × 12 cm</span>
+                            </div>
+                        </div>
+
+                        <!-- Pattern Resizer Widget -->
+                        <div class="p-4 bg-emerald-50 rounded-2xl border border-emerald-200 space-y-3">
+                            <div class="flex items-center justify-between">
+                                <h4 class="font-bold text-xs uppercase tracking-wider text-emerald-800 flex items-center">
+                                    <i class="fa-solid fa-up-right-and-down-left-from-center mr-1.5"></i> Smart Pattern Scaler
+                                </h4>
+                                <span id="scale-factor-badge" class="text-xs bg-emerald-600 text-white font-bold px-2.5 py-0.5 rounded-full">100% (Original)</span>
+                            </div>
+                            <p class="text-xs text-emerald-900">Enlarge or reduce pattern size while maintaining original design proportions!</p>
+                            
+                            <div class="flex items-center space-x-3">
+                                <input type="range" id="scale-slider" min="50" max="250" step="10" value="100" class="w-full accent-emerald-600 cursor-pointer" oninput="updateScaleSliderLabel(this.value)">
+                            </div>
+                            
+                            <div class="flex space-x-2 pt-1">
+                                <button onclick="applyPatternScale()" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-bold py-2 rounded-xl text-xs shadow transition">
+                                    Apply Scale Adjustment
+                                </button>
+                                <button onclick="resetPatternScale()" class="bg-stone-200 hover:bg-stone-300 text-stone-700 font-bold px-3 py-2 rounded-xl text-xs transition">
+                                    Reset
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Raw Instructions Input/Output -->
+                    <div class="lg:col-span-2 space-y-4 flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-center mb-1">
+                                <label class="block text-xs font-bold text-stone-600">Raw Pattern Instructions (Round by Round)</label>
+                                <button onclick="openCustomStitchModal()" class="text-xs text-amber-700 font-bold hover:underline flex items-center">
+                                    <i class="fa-solid fa-plus-circle mr-1"></i> Add Custom Stitch Type
+                                </button>
+                            </div>
+                            <p class="text-xs text-stone-400 mb-2">Format each line as: <code class="bg-stone-100 px-1 rounded text-stone-700">R1: 6 sc in MR (6)</code> or <code class="bg-stone-100 px-1 rounded text-stone-700">R2: [inc] x 6 (12)</code></p>
+                            <textarea id="edit-pattern-raw" rows="16" class="w-full bg-stone-50 border border-stone-200 rounded-2xl p-4 font-mono text-xs text-stone-800 focus:outline-none focus:ring-2 focus:ring-amber-500 shadow-inner" placeholder="R1: 6 sc in MR (6)&#10;R2: [inc] x 6 (12)&#10;R3: [1 sc, 1 inc] x 6 (18)&#10;R4: [2 sc, 1 inc] x 6 (24)"></textarea>
+                        </div>
+                        <div class="flex justify-end space-x-3">
+                            <button onclick="parseRawPatternText()" class="bg-stone-800 text-white hover:bg-stone-900 px-4 py-2.5 rounded-xl text-xs font-bold transition flex items-center">
+                                <i class="fa-solid fa-code mr-1.5"></i> Parse & Format Pattern
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+
+        <!-- ================= TAB 3: ACTIVE CROCHET WORKSPACE ================= -->
+        <section id="tab-workspace" class="hidden space-y-6">
+            
+            <!-- Top Status Bar & Basic Details -->
+            <div class="bg-white rounded-3xl p-5 border border-amber-200 shadow-sm flex flex-col md:flex-row items-center justify-between gap-4">
+                <div>
+                    <div class="flex items-center space-x-2">
+                        <h2 id="ws-pattern-title" class="text-2xl font-bold text-stone-800">Pattern Workspace</h2>
+                        <span id="ws-work-type-badge" class="bg-amber-100 text-amber-800 text-xs font-bold px-2.5 py-0.5 rounded-full">Round</span>
+                    </div>
+                    <p class="text-xs text-stone-500 flex items-center mt-0.5">
+                        <i class="fa-solid fa-cubes mr-1 text-amber-600"></i> Yarn: <span id="ws-yarn-display" class="font-bold text-stone-700 ml-1">Milk Cotton 5-ply</span>
+                        <span class="mx-2">•</span>
+                        <i class="fa-solid fa-screwdriver-wrench mr-1 text-amber-600"></i> Hook: <span id="ws-hook-display" class="font-bold text-stone-700 ml-1">4.0 mm</span>
+                    </p>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span id="ws-total-rounds-count" class="text-xs bg-amber-100 text-amber-800 px-3 py-1.5 rounded-full font-bold">0 Steps</span>
+                </div>
+            </div>
+
+            <!-- Workspace Layout: Left (Main Instructions & Round List) | Right (Progress Card & Square Stitch Map) -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                
+                <!-- LEFT COLUMN: Main Active Round Breakdown -->
+                <div class="lg:col-span-7 space-y-6">
+                    
+                    <!-- Active Step Highlight Card (Pattern Instructions) -->
+                    <div class="bg-white rounded-3xl p-6 border-2 border-amber-300 shadow-md relative overflow-hidden">
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-4 pb-4 border-b border-stone-100">
+                            <div class="flex items-center space-x-3">
+                                <span id="ws-current-step-badge" class="bg-amber-500 text-white font-bold text-xs px-3 py-1 rounded-full">R2</span>
+                                <h3 id="ws-current-step-raw" class="text-xl font-bold text-stone-800">R2: [inc] x 6 (12)</h3>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <button onclick="navigateStep(-1)" class="px-3 py-1.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 text-xs font-bold transition flex items-center">
+                                    <i class="fa-solid fa-chevron-left mr-1"></i> Prev
+                                </button>
+                                <button onclick="navigateStep(1)" class="px-3 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold transition flex items-center">
+                                    Next <i class="fa-solid fa-chevron-right ml-1"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Step Selector Pills -->
+                        <div id="ws-step-pills-bar" class="flex items-center space-x-1.5 overflow-x-auto pb-3 mb-2 scrollbar-none">
+                            <!-- Round pills inserted dynamically -->
+                        </div>
+
+                        <!-- Pattern Instructions Sequence -->
+                        <div class="space-y-4">
+                            <div>
+                                <h4 class="text-xs font-bold text-stone-500 uppercase tracking-wider mb-2">PATTERN INSTRUCTIONS</h4>
+                                <div id="ws-stitch-sequence-box" class="flex flex-wrap gap-2 p-3 bg-stone-50 rounded-2xl border border-stone-200">
+                                    <!-- Sequence Pill tags inserted via JS (e.g., #1 inc, #2 inc, #3 inc...) -->
+                                </div>
+                            </div>
+
+                            <!-- Placement & Target Info Side-by-Side -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+                                <div class="bg-amber-50/60 p-4 rounded-2xl border border-amber-200/80">
+                                    <h5 class="text-xs font-bold text-amber-900 mb-1 flex items-center">
+                                        <i class="fa-solid fa-crosshairs mr-1.5 text-amber-600"></i> Stitch Placement Target
+                                    </h5>
+                                    <p id="ws-placement-guide-text" class="text-xs text-stone-700 leading-relaxed">
+                                        Increase target: Place TWO stitches into the EXACT SAME single stitch space from the previous row.
+                                    </p>
+                                </div>
+
+                                <div class="bg-stone-50 p-4 rounded-2xl border border-stone-200">
+                                    <h5 class="text-xs font-bold text-stone-800 mb-1 flex items-center">
+                                        <i class="fa-solid fa-circle-info mr-1.5 text-stone-500"></i> How to Execute
+                                    </h5>
+                                    <p id="ws-stitch-howto-text" class="text-xs text-stone-600 leading-relaxed">
+                                        Work 2 single crochet stitches into the exact same stitch target.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Stitch Color Key Box -->
+                    <div class="bg-white rounded-3xl p-5 border border-amber-200 shadow-sm flex flex-col justify-between">
+                        <div class="flex items-center justify-between mb-3">
+                            <h3 class="text-xs font-bold text-stone-800 uppercase tracking-wider">Stitch Color Key</h3>
+                            <button onclick="openCustomStitchModal()" class="text-xs text-amber-700 font-bold hover:underline">
+                                <i class="fa-solid fa-plus mr-1"></i> Add Custom
+                            </button>
+                        </div>
+                        <div id="stitch-legend-container" class="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs">
+                            <!-- Color Legend inserted via JS -->
+                        </div>
+                    </div>
+
+                </div>
+
+
+                <!-- RIGHT COLUMN: Project Progress on TOP, Stitch Map BELOW -->
+                <div class="lg:col-span-5 space-y-6">
+                    
+                    <!-- Project Progress Box -->
+                    <div class="bg-white rounded-3xl p-6 border border-amber-200 shadow-sm space-y-4">
+                        <div class="flex justify-between items-center">
+                            <h3 class="text-base font-bold text-stone-800 flex items-center">
+                                <i class="fa-solid fa-chart-line text-amber-600 mr-2"></i> Project Progress
+                            </h3>
+                            <span id="ws-progress-percent" class="text-base font-bold text-amber-700">0%</span>
+                        </div>
+
+                        <!-- Progress Bar -->
+                        <div class="space-y-1">
+                            <div class="w-full bg-stone-100 h-3.5 rounded-full overflow-hidden border border-stone-200/60 p-0.5">
+                                <div id="ws-progress-bar" class="bg-amber-500 h-full rounded-full transition-all duration-300" style="width: 0%"></div>
+                            </div>
+                            <div class="text-xs text-stone-400 text-right font-medium" id="ws-progress-counts">
+                                Round 0 of 0 Completed
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="grid grid-cols-2 gap-3 pt-2">
+                            <button id="ws-mark-complete-btn" onclick="toggleCurrentRoundComplete()" class="bg-emerald-600 hover:bg-emerald-700 text-white py-2.5 px-4 rounded-xl text-xs font-bold shadow transition flex items-center justify-center">
+                                <i class="fa-solid fa-check mr-1.5"></i> Mark Done
+                            </button>
+                            <button onclick="resetCurrentProjectProgress()" class="bg-stone-100 hover:bg-rose-50 hover:text-rose-600 text-stone-600 border border-stone-200 py-2.5 px-4 rounded-xl text-xs font-bold transition flex items-center justify-center">
+                                <i class="fa-solid fa-rotate-right mr-1.5"></i> Reset Progress
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Stitch Map Card -->
+                    <div class="bg-white rounded-3xl p-6 border border-amber-200 shadow-sm flex flex-col justify-between">
+                        <div class="flex items-center justify-between mb-3">
+                            <div>
+                                <h3 class="text-lg font-bold text-stone-800">Stitch Map</h3>
+                                <p class="text-xs text-stone-500">Visual topology of round expansion</p>
+                            </div>
+                            <div class="flex items-center space-x-1.5">
+                                <button onclick="zoomMap(1.1)" class="w-7 h-7 rounded-lg bg-stone-100 hover:bg-stone-200 text-stone-700 font-bold text-xs">
+                                    <i class="fa-solid fa-plus"></i>
+                                </button>
+                                <button onclick="zoomMap(0.9)" class="w-7 h-7 rounded-lg bg-stone-100 hover:bg-stone-200 text-stone-700 font-bold text-xs">
+                                    <i class="fa-solid fa-minus"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Square Canvas Box -->
+                        <div class="relative w-full aspect-square bg-stone-900 rounded-2xl overflow-hidden flex items-center justify-center border border-stone-800 shadow-inner">
+                            <canvas id="topography-canvas" class="w-full h-full cursor-grab"></canvas>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-stone-100 border-t border-stone-200 py-4 mt-8">
+        <div class="max-w-7xl mx-auto px-4 text-center text-xs text-stone-500 flex flex-col sm:flex-row justify-between items-center gap-2">
+            <p>StitchCraft Studio © 2026 — Crafting with Precision & Joy 🧶</p>
+            <p class="font-semibold text-stone-600">Built for Crocheters Worldwide</p>
+        </div>
+    </footer>
+
+
+    <!-- ================= MODAL: ADD CUSTOM STITCH TYPE ================= -->
+    <div id="custom-stitch-modal" class="fixed inset-0 bg-stone-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-stone-200 space-y-4">
+            <div class="flex items-center justify-between border-b border-stone-100 pb-3">
+                <h3 class="text-lg font-bold text-stone-800">Add Custom Stitch Type</h3>
+                <button onclick="closeCustomStitchModal()" class="text-stone-400 hover:text-stone-600">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+
+            <div class="space-y-3">
+                <div>
+                    <label class="block text-xs font-bold text-stone-600 mb-1">Stitch Abbreviation (e.g. puff, pop, hdc2tog)</label>
+                    <input type="text" id="new-stitch-abbr" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 text-xs font-bold focus:ring-2 focus:ring-amber-500" placeholder="puff">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-stone-600 mb-1">Full Stitch Name</label>
+                    <input type="text" id="new-stitch-name" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 text-xs font-bold focus:ring-2 focus:ring-amber-500" placeholder="Puff Stitch">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-stone-600 mb-1">Highlight Color</label>
+                    <div class="flex space-x-2">
+                        <input type="color" id="new-stitch-color" value="#ec4899" class="w-12 h-9 rounded-lg border border-stone-200 cursor-pointer p-0.5">
+                        <input type="text" id="new-stitch-color-hex" value="#ec4899" readonly class="w-full bg-stone-100 border border-stone-200 rounded-xl px-3 text-xs font-mono">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-stone-600 mb-1">Execution Instructions / Description</label>
+                    <textarea id="new-stitch-desc" rows="3" class="w-full bg-stone-50 border border-stone-200 rounded-xl p-3 text-xs font-semibold focus:ring-2 focus:ring-amber-500" placeholder="Yarn over, insert hook, pull up loop 3 times in same stitch, yarn over and pull through all loops..."></textarea>
+                </div>
+            </div>
+
+            <div class="flex justify-end space-x-2 pt-2">
+                <button onclick="closeCustomStitchModal()" class="px-4 py-2 bg-stone-100 hover:bg-stone-200 text-stone-700 font-bold rounded-xl text-xs">Cancel</button>
+                <button onclick="saveCustomStitch()" class="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-xl text-xs shadow">Save Stitch Type</button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ================= JAVASCRIPT APPLICATION LOGIC ================= -->
+    <script>
+        // --- 1. DEFAULT STITCH DICTIONARY ---
+        let STITCH_TYPES = {
+            'sc': { name: 'Single Crochet', color: '#f59e0b', bg: 'bg-amber-100 text-amber-900 border-amber-300', desc: 'Insert hook into stitch, yarn over, pull up loop (2 loops on hook). Yarn over, pull through both loops.' },
+            'inc': { name: 'Increase', color: '#3b82f6', bg: 'bg-blue-100 text-blue-900 border-blue-300', desc: 'Work 2 single crochet stitches into the exact same stitch target.' },
+            'dec': { name: 'Decrease', color: '#f43f5e', bg: 'bg-rose-100 text-rose-900 border-rose-300', desc: 'Insert hook under front loops of next 2 stitches, yarn over, pull through 2 loops, yarn over, pull through remaining loops.' },
+            'dc': { name: 'Double Crochet', color: '#8b5cf6', bg: 'bg-purple-100 text-purple-900 border-purple-300', desc: 'Yarn over, insert hook, yarn over, pull up loop (3 loops). Yarn over, pull through 2 loops twice.' },
+            'hdc': { name: 'Half Double Crochet', color: '#14b8a6', bg: 'bg-teal-100 text-teal-900 border-teal-300', desc: 'Yarn over, insert hook, yarn over, pull up loop (3 loops). Yarn over, pull through all 3 loops.' },
+            'sl st': { name: 'Slip Stitch', color: '#64748b', bg: 'bg-slate-100 text-slate-900 border-slate-300', desc: 'Insert hook, yarn over, pull through stitch and loop on hook directly.' },
+            'mr': { name: 'Magic Ring', color: '#d97706', bg: 'bg-amber-200 text-amber-900 border-amber-400', desc: 'Form loop of yarn, work stitches directly into the loop, pull tail to close ring.' },
+            'tr': { name: 'Treble Crochet', color: '#06b6d4', bg: 'bg-cyan-100 text-cyan-900 border-cyan-300', desc: 'Yarn over twice, insert hook, yarn over, pull up loop. [Yarn over, pull through 2 loops] 3 times.' },
+            'blo': { name: 'Back Loop Only', color: '#a855f7', bg: 'bg-purple-100 text-purple-900 border-purple-300', desc: 'Insert hook into back loop only of previous stitch.' },
+            'flo': { name: 'Front Loop Only', color: '#ec4899', bg: 'bg-pink-100 text-pink-900 border-pink-300', desc: 'Insert hook into front loop only of previous stitch.' }
+        };
+
+        // --- 2. INITIAL PATTERN DATABASE ---
+        let PATTERNS = [
+            {
+                id: 'pattern-1',
+                title: 'Classic Amigurumi Sphere',
+                workType: 'round',
+                yarnType: 'Milk Cotton 5-ply',
+                hookSize: '4.0',
+                gaugeRate: 2.2,
+                scalePercent: 100,
+                completedRounds: [],
+                rawInstructions: `R1: 6 sc in MR (6)\nR2: [inc] x 6 (12)\nR3: [1 sc, inc] x 6 (18)\nR4: [2 sc, inc] x 6 (24)\nR5: [3 sc, inc] x 6 (30)\nR6-R9: 30 sc (30)\nR10: [3 sc, dec] x 6 (24)\nR11: [2 sc, dec] x 6 (18)\nR12: [1 sc, dec] x 6 (12)\nR13: [dec] x 6 (6)`
+            },
+            {
+                id: 'pattern-2',
+                title: 'Cozy Beanie Hat Base',
+                workType: 'round',
+                yarnType: 'Chunky Plush Yarn',
+                hookSize: '6.0',
+                gaugeRate: 1.5,
+                scalePercent: 100,
+                completedRounds: [],
+                rawInstructions: `R1: 8 hdc in MR (8)\nR2: [inc] x 8 (16)\nR3: [1 hdc, inc] x 8 (24)\nR4: [2 hdc, inc] x 8 (32)\nR5: [3 hdc, inc] x 8 (40)\nR6-R12: 40 hdc (40)`
+            },
+            {
+                id: 'pattern-3',
+                title: 'Classic Granny Square',
+                workType: 'flat',
+                yarnType: 'Milk Cotton 8-ply',
+                hookSize: '5.0',
+                gaugeRate: 1.8,
+                scalePercent: 100,
+                completedRounds: [],
+                rawInstructions: `Row 1: 15 sc (15)\nRow 2: 15 sc (15)\nRow 3: 15 sc (15)\nRow 4: 15 sc (15)`
+            }
+        ];
+
+        // Active State
+        let activePatternId = 'pattern-1';
+        let currentStepIndex = 0;
+        let mapZoom = 1.0;
+
+        // Helper function to escape HTML special characters
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        // Render stitch color key/legend in workspace & editor
+        function renderStitchLegend() {
+            const container = document.getElementById('stitch-legend-container');
+            if (!container) return;
+            container.innerHTML = Object.keys(STITCH_TYPES).map(key => {
+                const item = STITCH_TYPES[key];
+                return `
+                    <div class="flex items-center space-x-2 p-1.5 rounded-xl border ${item.bg || 'bg-stone-50 text-stone-800 border-stone-200'}">
+                        <span class="w-3 h-3 rounded-full shrink-0 shadow-sm" style="background-color: ${item.color}"></span>
+                        <div class="truncate">
+                            <span class="font-bold uppercase tracking-wider">${key}</span>
+                            <span class="text-[10px] opacity-75 hidden sm:inline"> - ${escapeHtml(item.name)}</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Custom Stitch Modal Handlers
+        function openCustomStitchModal() {
+            document.getElementById('custom-stitch-modal').classList.remove('hidden');
+        }
+
+        function closeCustomStitchModal() {
+            document.getElementById('custom-stitch-modal').classList.add('hidden');
+        }
+
+        function saveCustomStitch() {
+            const abbr = document.getElementById('new-stitch-abbr').value.trim().toLowerCase();
+            const name = document.getElementById('new-stitch-name').value.trim();
+            const color = document.getElementById('new-stitch-color').value;
+            const desc = document.getElementById('new-stitch-desc').value.trim();
+
+            if (!abbr || !name) {
+                alert('Please provide both stitch abbreviation and full name.');
+                return;
+            }
+
+            STITCH_TYPES[abbr] = {
+                name: name,
+                color: color,
+                bg: 'bg-amber-100 text-amber-900 border-amber-300',
+                desc: desc || `Custom stitch: ${name}`
+            };
+
+            renderStitchLegend();
+            closeCustomStitchModal();
+            
+            // Refresh workspace if open
+            renderWorkspace();
+        }
+
+        // --- 3. LIFECYCLE INITIALIZATION ---
+        window.onload = function() {
+            renderPatternGrid();
+            renderStitchLegend();
+            
+            // Sync color hex picker
+            const colorPicker = document.getElementById('new-stitch-color');
+            const colorHex = document.getElementById('new-stitch-color-hex');
+            if (colorPicker && colorHex) {
+                colorPicker.addEventListener('input', (e) => colorHex.value = e.target.value);
+            }
+
+            // Draw initial state
+            renderWorkspace();
+        };
+
+        // --- 4. NAVIGATION & TAB SWITCHING ---
+        function switchTab(tabName) {
+            ['library', 'editor', 'workspace'].forEach(t => {
+                const sec = document.getElementById(`tab-${t}`);
+                const btn = document.getElementById(`nav-${t}`);
+                if (sec) sec.classList.add('hidden');
+                if (btn) {
+                    btn.classList.remove('bg-amber-600', 'text-white', 'shadow-sm');
+                    btn.classList.add('text-amber-800');
+                }
+            });
+
+            const activeSec = document.getElementById(`tab-${tabName}`);
+            const activeBtn = document.getElementById(`nav-${tabName}`);
+            if (activeSec) activeSec.classList.remove('hidden');
+            if (activeBtn) {
+                activeBtn.classList.add('bg-amber-600', 'text-white', 'shadow-sm');
+                activeBtn.classList.remove('text-amber-800');
+            }
+
+            if (tabName === 'workspace') {
+                renderWorkspace();
+            }
+        }
+
+        // --- 5. PATTERN LIBRARY MANAGEMENT ---
+        function renderPatternGrid() {
+            const grid = document.getElementById('pattern-grid');
+            const badge = document.getElementById('pattern-count-badge');
+            if (!grid) return;
+
+            badge.textContent = `${PATTERNS.length} Pattern${PATTERNS.length === 1 ? '' : 's'}`;
+
+            grid.innerHTML = PATTERNS.map(p => {
+                const roundCount = parseRawPatternLines(p.rawInstructions).length;
+                const completedCount = (p.completedRounds || []).length;
+                const pct = roundCount > 0 ? Math.round((completedCount / roundCount) * 100) : 0;
+
+                return `
+                    <div class="bg-white rounded-3xl p-5 border border-amber-200 shadow-sm hover:shadow-md transition flex flex-col justify-between space-y-4">
+                        <div>
+                            <div class="flex justify-between items-start mb-2">
+                                <span class="text-[10px] uppercase font-bold tracking-wider px-2.5 py-0.5 rounded-full ${p.workType === 'round' ? 'bg-amber-100 text-amber-800' : 'bg-blue-100 text-blue-800'}">
+                                    ${p.workType === 'round' ? 'Worked in Round' : 'Worked Flat'}
+                                </span>
+                                <span class="text-xs font-bold text-amber-700">${roundCount} Steps</span>
+                            </div>
+                            <h4 class="text-lg font-bold text-stone-800 leading-tight mb-1">${escapeHtml(p.title)}</h4>
+                            <p class="text-xs text-stone-500">
+                                <i class="fa-solid fa-cubes text-amber-600 mr-1"></i> ${escapeHtml(p.yarnType || 'Milk Cotton')} • ${p.hookSize || '4.0'} mm hook
+                            </p>
+                        </div>
+
+                        <div>
+                            <div class="flex justify-between text-xs font-bold text-stone-500 mb-1">
+                                <span>Progress</span>
+                                <span class="text-amber-700">${pct}%</span>
+                            </div>
+                            <div class="w-full bg-stone-100 h-2 rounded-full overflow-hidden border border-stone-200/50">
+                                <div class="bg-amber-500 h-full rounded-full" style="width: ${pct}%"></div>
+                            </div>
+                        </div>
+
+                        <div class="flex space-x-2 pt-2 border-t border-stone-100">
+                            <button onclick="openPatternInWorkspace('${p.id}')" class="w-full bg-amber-600 hover:bg-amber-700 text-white font-bold py-2 rounded-xl text-xs shadow transition flex items-center justify-center">
+                                <i class="fa-solid fa-circle-play mr-1.5"></i> Start
+                            </button>
+                            <button onclick="openPatternInEditor('${p.id}')" class="bg-stone-100 hover:bg-stone-200 text-stone-700 font-bold px-3 py-2 rounded-xl text-xs transition">
+                                <i class="fa-solid fa-pen"></i>
+                            </button>
+                            <button onclick="deletePattern('${p.id}')" class="bg-stone-100 hover:bg-rose-100 hover:text-rose-600 text-stone-500 font-bold px-3 py-2 rounded-xl text-xs transition">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function createNewPattern() {
+            const newId = 'pattern-' + Date.now();
+            const newPat = {
+                id: newId,
+                title: 'Untitled Pattern',
+                workType: 'round',
+                yarnType: 'Milk Cotton 5-ply',
+                hookSize: '4.0',
+                gaugeRate: 2.2,
+                scalePercent: 100,
+                completedRounds: [],
+                rawInstructions: `R1: 6 sc in MR (6)\nR2: [inc] x 6 (12)\nR3: [1 sc, inc] x 6 (18)`
+            };
+            PATTERNS.push(newPat);
+            renderPatternGrid();
+            openPatternInEditor(newId);
+        }
+
+        function deletePattern(id) {
+            if (PATTERNS.length <= 1) {
+                alert('You must keep at least one pattern in your library.');
+                return;
+            }
+            PATTERNS = PATTERNS.filter(p => p.id !== id);
+            if (activePatternId === id) {
+                activePatternId = PATTERNS[0].id;
+            }
+            renderPatternGrid();
+        }
+
+        // --- 6. DOCUMENT / IMAGE IMPORTER & OCR PARSER ---
+        async function importPatternFile(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            // 5GB Max Size Guardrail
+            const maxBytes = 5 * 1024 * 1024 * 1024;
+            if (file.size > maxBytes) {
+                alert('File size exceeds the 5GB limit.');
+                return;
+            }
+
+            const banner = document.getElementById('import-processing-banner');
+            const statusTitle = document.getElementById('import-status-title');
+            const statusDesc = document.getElementById('import-status-desc');
+            
+            if (banner) banner.classList.remove('hidden');
+            if (statusTitle) statusTitle.textContent = `Reading ${file.name}...`;
+
+            try {
+                let extractedText = '';
+                const fileName = file.name.toLowerCase();
+
+                if (fileName.endsWith('.json')) {
+                    const text = await file.text();
+                    const parsed = JSON.parse(text);
+                    const newId = 'pattern-' + Date.now();
+                    PATTERNS.push({
+                        id: newId,
+                        title: parsed.title || file.name.replace(/\.[^/.]+$/, ""),
+                        workType: parsed.workType || 'round',
+                        yarnType: parsed.yarnType || 'Milk Cotton 5-ply',
+                        hookSize: parsed.hookSize || '4.0',
+                        gaugeRate: parsed.gaugeRate || 2.2,
+                        scalePercent: 100,
+                        completedRounds: [],
+                        rawInstructions: parsed.rawInstructions || ''
+                    });
+                    renderPatternGrid();
+                    openPatternInWorkspace(newId);
+                    if (banner) banner.classList.add('hidden');
+                    return;
+                } else if (fileName.endsWith('.docx') || fileName.endsWith('.doc')) {
+                    if (statusDesc) statusDesc.textContent = 'Extracting Word Document text...';
+                    const arrayBuffer = await file.arrayBuffer();
+                    const result = await mammoth.extractRawText({ arrayBuffer: arrayBuffer });
+                    extractedText = result.value;
+                } else if (fileName.endsWith('.pdf')) {
+                    if (statusDesc) statusDesc.textContent = 'Extracting PDF text pages...';
+                    const arrayBuffer = await file.arrayBuffer();
+                    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+                    let fullText = '';
+                    for (let i = 1; i <= pdf.numPages; i++) {
+                        const page = await pdf.getPage(i);
+                        const textContent = await page.getTextContent();
+                        const pageText = textContent.items.map(item => item.str).join(' ');
+                        fullText += pageText + '\n';
+                    }
+                    extractedText = fullText;
+                } else if (file.type.startsWith('image/') || /\.(png|jpg|jpeg|webp)$/.test(fileName)) {
+                    if (statusDesc) statusDesc.textContent = 'Running Optical Character Recognition (OCR) on Image...';
+                    const result = await Tesseract.recognize(file, 'eng');
+                    extractedText = result.data.text;
+                } else {
+                    // Default raw text reader
+                    extractedText = await file.text();
+                }
+
+                // Filter text to target section starting from R1: / Round 1:
+                const cleanInstructions = extractPatternBody(extractedText);
+                const newId = 'pattern-' + Date.now();
+                PATTERNS.push({
+                    id: newId,
+                    title: file.name.replace(/\.[^/.]+$/, ""),
+                    workType: 'round',
+                    yarnType: 'Milk Cotton 5-ply',
+                    hookSize: '4.0',
+                    gaugeRate: 2.2,
+                    scalePercent: 100,
+                    completedRounds: [],
+                    rawInstructions: cleanInstructions
+                });
+
+                renderPatternGrid();
+                openPatternInWorkspace(newId);
+            } catch (err) {
+                console.error(err);
+                alert('Failed to parse pattern file. Please verify content or paste text manually.');
+            } finally {
+                if (banner) banner.classList.add('hidden');
+                event.target.value = '';
+            }
+        }
+
+        // Helper to extract pattern lines starting from R1/Round 1
+        function extractPatternBody(text) {
+            if (!text) return '';
+            const lines = text.split(/\r?\n/);
+            let startIndex = lines.findIndex(l => /(?:R\s*1|Round\s*1|Row\s*1)\s*:/i.test(l));
+            
+            if (startIndex !== -1) {
+                return lines.slice(startIndex).join('\n').trim();
+            }
+            return text.trim();
+        }
+
+        // --- 7. PATTERN EDITOR & SCALER LOGIC ---
+        function openPatternInEditor(id) {
+            activePatternId = id;
+            const p = PATTERNS.find(pat => pat.id === id);
+            if (!p) return;
+
+            document.getElementById('edit-pattern-title').value = p.title || '';
+            document.getElementById('edit-work-type').value = p.workType || 'round';
+            document.getElementById('edit-yarn-type').value = p.yarnType || '';
+            document.getElementById('edit-hook-size').value = p.hookSize || '4.0';
+            document.getElementById('edit-gauge-rate').value = p.gaugeRate || 2.2;
+            document.getElementById('scale-slider').value = p.scalePercent || 100;
+            document.getElementById('scale-factor-badge').textContent = `${p.scalePercent || 100}% (${p.scalePercent === 100 ? 'Original' : 'Adjusted'})`;
+            document.getElementById('edit-pattern-raw').value = p.rawInstructions || '';
+
+            calculateEstimatedDimensions();
+            switchTab('editor');
+        }
+
+        function calculateEstimatedDimensions() {
+            const hook = parseFloat(document.getElementById('edit-hook-size').value) || 4.0;
+            const gauge = parseFloat(document.getElementById('edit-gauge-rate').value) || 2.2;
+            const scalePct = parseInt(document.getElementById('scale-slider').value) || 100;
+
+            const p = PATTERNS.find(pat => pat.id === activePatternId);
+            const lines = parseRawPatternLines(document.getElementById('edit-pattern-raw').value || '');
+            const maxSts = lines.reduce((max, l) => Math.max(max, l.sts), 12);
+            
+            const approxWidth = Math.round(((maxSts / gauge) * (scalePct / 100) * (hook / 4.0)) * 10) / 10;
+            const approxHeight = Math.round(((lines.length / (gauge * 0.8)) * (scalePct / 100) * (hook / 4.0)) * 10) / 10;
+
+            const label = document.getElementById('estimated-dimensions-text');
+            if (label) label.textContent = `${approxWidth} cm × ${approxHeight} cm`;
+        }
+
+        function updateScaleSliderLabel(val) {
+            const badge = document.getElementById('scale-factor-badge');
+            if (badge) {
+                badge.textContent = `${val}% (${val == 100 ? 'Original' : val > 100 ? 'Enlarged' : 'Reduced'})`;
+            }
+            calculateEstimatedDimensions();
+        }
+
+        function applyPatternScale() {
+            const val = parseInt(document.getElementById('scale-slider').value) || 100;
+            const p = PATTERNS.find(pat => pat.id === activePatternId);
+            if (p) {
+                p.scalePercent = val;
+                alert(`Pattern scale set to ${val}%. Stitch numbers maintain structural integrity.`);
+            }
+        }
+
+        function resetPatternScale() {
+            document.getElementById('scale-slider').value = 100;
+            updateScaleSliderLabel(100);
+        }
+
+        function parseRawPatternText() {
+            const raw = document.getElementById('edit-pattern-raw').value;
+            const parsed = parseRawPatternLines(raw);
+            const formatted = parsed.map(l => `${l.label}: ${l.originalInstruction}`).join('\n');
+            document.getElementById('edit-pattern-raw').value = formatted;
+        }
+
+        function saveCurrentEditorPattern() {
+            const p = PATTERNS.find(pat => pat.id === activePatternId);
+            if (!p) return;
+
+            p.title = document.getElementById('edit-pattern-title').value.trim() || 'Untitled Pattern';
+            p.workType = document.getElementById('edit-work-type').value;
+            p.yarnType = document.getElementById('edit-yarn-type').value.trim() || 'Milk Cotton 5-ply';
+            p.hookSize = document.getElementById('edit-hook-size').value;
+            p.gaugeRate = parseFloat(document.getElementById('edit-gauge-rate').value) || 2.2;
+            p.scalePercent = parseInt(document.getElementById('scale-slider').value) || 100;
+            p.rawInstructions = document.getElementById('edit-pattern-raw').value;
+
+            renderPatternGrid();
+            alert('Pattern saved successfully!');
+        }
+
+        function loadIntoWorkspaceFromEditor() {
+            saveCurrentEditorPattern();
+            openPatternInWorkspace(activePatternId);
+        }
+
+        // --- 8. PATTERN PARSER ENGINE ---
+        function parseRawPatternLines(text) {
+            if (!text) return [];
+            const rawLines = text.split(/\r?\n/).filter(l => l.trim().length > 0);
+            
+            return rawLines.map((line, idx) => {
+                const matchLabel = line.match(/^(R\d+(?:-R?\d+)?|Row\s*\d+|Round\s*\d+)\s*:\s*(.*)/i);
+                let label = `R${idx + 1}`;
+                let instruction = line.trim();
+
+                if (matchLabel) {
+                    label = matchLabel[1].toUpperCase();
+                    instruction = matchLabel[2].trim();
+                }
+
+                // Extract end stitch count if present e.g. (12)
+                const stsMatch = instruction.match(/\((\d+)\s*(?:sts)?\)$/i);
+                let sts = 6;
+                if (stsMatch) {
+                    sts = parseInt(stsMatch[1]);
+                } else {
+                    sts = (idx + 1) * 6;
+                }
+
+                // Tokenize sequence instructions (#1 inc, #2 sc...)
+                const sequence = generateStitchSequence(instruction, sts);
+
+                return {
+                    label: label,
+                    originalInstruction: instruction,
+                    sts: sts,
+                    sequence: sequence
+                };
+            });
+        }
+
+        function generateStitchSequence(instruction, totalSts) {
+            const seq = [];
+            const clean = instruction.toLowerCase();
+
+            if (clean.includes('mr') || clean.includes('magic ring')) {
+                for (let i = 1; i <= totalSts; i++) {
+                    seq.push({ num: i, type: 'sc', label: `#${i} sc` });
+                }
+                return seq;
+            }
+
+            if (clean.includes('inc')) {
+                let current = 1;
+                while (current <= totalSts) {
+                    if (current % 2 === 0) {
+                        seq.push({ num: current, type: 'inc', label: `#${current} inc` });
+                    } else {
+                        seq.push({ num: current, type: 'sc', label: `#${current} sc` });
+                    }
+                    current++;
+                }
+                return seq;
+            }
+
+            if (clean.includes('dec')) {
+                let current = 1;
+                while (current <= totalSts) {
+                    if (current % 3 === 0) {
+                        seq.push({ num: current, type: 'dec', label: `#${current} dec` });
+                    } else {
+                        seq.push({ num: current, type: 'sc', label: `#${current} sc` });
+                    }
+                    current++;
+                }
+                return seq;
+            }
+
+            if (clean.includes('hdc')) {
+                for (let i = 1; i <= totalSts; i++) {
+                    seq.push({ num: i, type: 'hdc', label: `#${i} hdc` });
+                }
+                return seq;
+            }
+
+            // Default fallback
+            for (let i = 1; i <= totalSts; i++) {
+                seq.push({ num: i, type: 'sc', label: `#${i} sc` });
+            }
+            return seq;
+        }
+
+        // --- 9. ACTIVE CROCHET WORKSPACE RENDERING ---
+        function openPatternInWorkspace(id) {
+            activePatternId = id;
+            currentStepIndex = 0;
+            switchTab('workspace');
+        }
+
+        function renderWorkspace() {
+            const p = PATTERNS.find(pat => pat.id === activePatternId);
+            if (!p) return;
+
+            document.getElementById('ws-pattern-title').textContent = p.title || 'Untitled Pattern';
+            document.getElementById('ws-work-type-badge').textContent = p.workType === 'round' ? 'Round Work' : 'Flat Rows';
+            document.getElementById('ws-yarn-display').textContent = p.yarnType || 'Milk Cotton 5-ply';
+            document.getElementById('ws-hook-display').textContent = `${p.hookSize || '4.0'} mm`;
+
+            const parsedSteps = parseRawPatternLines(p.rawInstructions);
+            document.getElementById('ws-total-rounds-count').textContent = `${parsedSteps.length} Steps`;
+
+            if (currentStepIndex >= parsedSteps.length) {
+                currentStepIndex = Math.max(0, parsedSteps.length - 1);
+            }
+
+            // Render Step Pills Bar
+            const pillsBar = document.getElementById('ws-step-pills-bar');
+            if (pillsBar) {
+                pillsBar.innerHTML = parsedSteps.map((step, idx) => {
+                    const isDone = (p.completedRounds || []).includes(idx);
+                    const isActive = idx === currentStepIndex;
+                    return `
+                        <button onclick="selectStep(${idx})" class="px-3 py-1 rounded-full text-xs font-bold transition shrink-0 ${
+                            isActive ? 'bg-amber-500 text-white ring-2 ring-amber-300' :
+                            isDone ? 'bg-emerald-100 text-emerald-800 border border-emerald-300' :
+                            'bg-stone-100 text-stone-600 hover:bg-stone-200'
+                        }">
+                            ${step.label}
+                        </button>
+                    `;
+                }).join('');
+            }
+
+            // Render Active Step Details
+            const activeStep = parsedSteps[currentStepIndex] || { label: 'R1', originalInstruction: '6 sc in MR (6)', sts: 6, sequence: [] };
+            document.getElementById('ws-current-step-badge').textContent = activeStep.label;
+            document.getElementById('ws-current-step-raw').textContent = `${activeStep.label}: ${activeStep.originalInstruction}`;
+
+            // Render Sequence Pills (#1 inc, #2 sc...)
+            const seqBox = document.getElementById('ws-stitch-sequence-box');
+            if (seqBox) {
+                seqBox.innerHTML = activeStep.sequence.map(item => {
+                    const info = STITCH_TYPES[item.type] || STITCH_TYPES['sc'];
+                    return `
+                        <span class="px-2.5 py-1 rounded-xl text-xs font-bold shadow-sm border ${info.bg}">
+                            ${item.label}
+                        </span>
+                    `;
+                }).join('');
+            }
+
+            // Update Target & Execution Descriptions
+            const primaryStitchKey = activeStep.sequence.find(s => s.type !== 'sc')?.type || 'sc';
+            const stitchMeta = STITCH_TYPES[primaryStitchKey] || STITCH_TYPES['sc'];
+            document.getElementById('ws-placement-guide-text').textContent = stitchMeta.desc;
+            document.getElementById('ws-stitch-howto-text').textContent = `Target: ${stitchMeta.name}. Maintain uniform tension across all ${activeStep.sts} stitches.`;
+
+            // Render Progress Bar
+            updateProgressBar(p, parsedSteps.length);
+
+            // Render Canvas Map
+            renderStitchMap(activeStep, currentStepIndex + 1);
+        }
+
+        function selectStep(idx) {
+            currentStepIndex = idx;
+            renderWorkspace();
+        }
+
+        function navigateStep(dir) {
+            const p = PATTERNS.find(pat => pat.id === activePatternId);
+            if (!p) return;
+            const parsedSteps = parseRawPatternLines(p.rawInstructions);
+            const nextIdx = currentStepIndex + dir;
+            if (nextIdx >= 0 && nextIdx < parsedSteps.length) {
+                currentStepIndex = nextIdx;
+                renderWorkspace();
+            }
+        }
+
+        function toggleCurrentRoundComplete() {
+            const p = PATTERNS.find(pat => pat.id === activePatternId);
+            if (!p) return;
+            if (!p.completedRounds) p.completedRounds = [];
+
+            if (!p.completedRounds.includes(currentStepIndex)) {
+                p.completedRounds.push(currentStepIndex);
+            }
+
+            const totalSteps = parseRawPatternLines(p.rawInstructions).length;
+            renderWorkspace();
+
+            // Trigger full-screen confetti on 100% completion!
+            if (p.completedRounds.length >= totalSteps && typeof confetti === 'function') {
+                confetti({
+                    particleCount: 120,
+                    spread: 80,
+                    origin: { y: 0.6 }
+                });
+            }
+        }
+
+        function resetCurrentProjectProgress() {
+            const p = PATTERNS.find(pat => pat.id === activePatternId);
+            if (p) {
+                p.completedRounds = [];
+                renderWorkspace();
+            }
+        }
+
+        function updateProgressBar(p, totalSteps) {
+            const completedCount = (p.completedRounds || []).length;
+            const pct = totalSteps > 0 ? Math.round((completedCount / totalSteps) * 100) : 0;
+
+            const bar = document.getElementById('ws-progress-bar');
+            const percentLabel = document.getElementById('ws-progress-percent');
+            const countsLabel = document.getElementById('ws-progress-counts');
+
+            if (bar) bar.style.width = `${pct}%`;
+            if (percentLabel) percentLabel.textContent = `${pct}%`;
+            if (countsLabel) countsLabel.textContent = `Round ${completedCount} of ${totalSteps} Completed`;
+
+            const markBtn = document.getElementById('ws-mark-complete-btn');
+            if (markBtn) {
+                const isDone = (p.completedRounds || []).includes(currentStepIndex);
+                markBtn.className = isDone ?
+                    'bg-emerald-800 text-white py-2.5 px-4 rounded-xl text-xs font-bold shadow transition flex items-center justify-center' :
+                    'bg-emerald-600 hover:bg-emerald-700 text-white py-2.5 px-4 rounded-xl text-xs font-bold shadow transition flex items-center justify-center';
+                markBtn.innerHTML = isDone ? `<i class="fa-solid fa-check-double mr-1.5"></i> Done!` : `<i class="fa-solid fa-check mr-1.5"></i> Mark Done`;
+            }
+        }
+
+        // --- 10. CANVAS STITCH MAP RENDERER ---
+        function zoomMap(factor) {
+            mapZoom = Math.max(0.5, Math.min(2.5, mapZoom * factor));
+            renderWorkspace();
+        }
+
+        function renderStitchMap(step, roundNum) {
+            const canvas = document.getElementById('topography-canvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+
+            // Responsive high-DPI scaling
+            const rect = canvas.parentElement.getBoundingClientRect();
+            canvas.width = rect.width * window.devicePixelRatio;
+            canvas.height = rect.height * window.devicePixelRatio;
+            ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+
+            const width = rect.width;
+            const height = rect.height;
+            const centerX = width / 2;
+            const centerY = height / 2;
+
+            ctx.clearRect(0, 0, width, height);
+
+            // Get total round count for dynamic ring spacing calculation
+            const p = PATTERNS.find(pat => pat.id === activePatternId);
+            const totalPatternRounds = p ? parseRawPatternLines(p.rawInstructions).length : 12;
+            
+            // Base radius scale: Round 1 is innermost, expanding outwards up to max radius
+            const maxRadius = Math.min(width, height) * 0.42 * mapZoom;
+            const ringSpacing = maxRadius / Math.max(totalPatternRounds, 6);
+            
+            // Draw background reference grid rings up to max pattern rounds
+            ctx.strokeStyle = '#27272a';
+            ctx.lineWidth = 1;
+            for (let r = 1; r <= Math.max(totalPatternRounds, 6); r++) {
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, r * ringSpacing, 0, Math.PI * 2);
+                ctx.stroke();
+            }
+
+            // Draw past rounds as subtle background rings
+            for (let r = 1; r < roundNum; r++) {
+                ctx.strokeStyle = 'rgba(217, 119, 6, 0.35)';
+                ctx.setLineDash([3, 3]);
+                ctx.lineWidth = 1.2;
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, r * ringSpacing, 0, Math.PI * 2);
+                ctx.stroke();
+                ctx.setLineDash([]);
+            }
+
+            // Current Active Round Ring & Radius (R1 = 1 * ringSpacing)
+            const activeRadius = roundNum * ringSpacing;
+            const totalSts = step.sts || 6;
+
+            // Highlight Active Ring Guideline
+            ctx.strokeStyle = '#f59e0b';
+            ctx.setLineDash([4, 4]);
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, activeRadius, 0, Math.PI * 2);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            // Render Nodes for each stitch on the active ring
+            for (let i = 0; i < totalSts; i++) {
+                const angle = (i / totalSts) * Math.PI * 2 - Math.PI / 2;
+                const x = centerX + activeRadius * Math.cos(angle);
+                const y = centerY + activeRadius * Math.sin(angle);
+
+                const seqItem = step.sequence[i] || { type: 'sc' };
+                const color = (STITCH_TYPES[seqItem.type] || STITCH_TYPES['sc']).color;
+
+                // Node Glow & Shadow
+                ctx.beginPath();
+                ctx.arc(x, y, 6.5, 0, Math.PI * 2);
+                ctx.fillStyle = color;
+                ctx.fill();
+                ctx.strokeStyle = '#ffffff';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+            }
+
+            // Center Magic Ring / Starting Point Indicator
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, 3.5, 0, Math.PI * 2);
+            ctx.fillStyle = '#f59e0b';
+            ctx.fill();
+        }
+    </script>
+</body>
+</html>
